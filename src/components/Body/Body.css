@@ -1,0 +1,170 @@
+.main{
+    flex: 1;
+    min-height: 100vh;
+    padding-bottom: 15vh;
+    position: relative;
+    background-color: rgb(50, 69, 91);
+    flex-direction: column;
+}
+
+.main-container span{
+    font-size: 6vw;
+    background: linear-gradient(to right,rgba(255, 255, 255, 0.777),rgba(88, 170, 185, 0.782)
+    ,rgba(222, 7, 93, 0.788)) ;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 50px;
+}
+
+.main-container h2{
+    font-size:2vw ;
+    color: rgba(240,248,255,0.733);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+/*.chat-container{
+    width:100%;
+    max-height: calc(100vh-80px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 12px 20px;
+}*/
+.main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* This makes the chat messages scroll within the available space */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 24vh; /* Leaves room for fixed prompt area */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+
+
+.user-chat-box {
+  display: flex;
+  width: fit-content;
+  max-width: 70%;
+  padding: 16px 20px;
+  background-color: #4db8ff;
+  border-radius: 30px 30px 0px 30px;
+  color: rgba(255, 255, 255, 0.95);;
+  font-size: 15px;
+  align-self: flex-end; 
+  margin: 10px 0;
+}
+
+
+.ai-chat-box {
+  display: flex;
+  width: fit-content;
+  max-width: 70%;
+  padding: 16px 20px;
+  background-color: rgba(76, 153, 220, 0.9);
+  border-radius: 30px 30px 30px 0px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  justify-content: flex-start;
+  margin: 10px 0; 
+  flex-wrap: wrap;
+}
+
+.prompt-area {
+  position: absolute;
+  height: 60px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(50, 69, 91);
+  border-radius: 30px;
+  z-index: 999;
+  padding: 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  flex-wrap: wrap;
+}
+
+
+#prompt{
+   flex:1;
+   background-color: rgba(240, 248, 255, 0.42);
+   width: 40%;
+   height: 100%;
+   padding: 12px 20px; 
+   outline: none;
+   border: none;
+   border: 2px solid rgb(43,51,57);
+   border-right: none;
+   border-radius: 30px 0px 0px 30px;
+   box-shadow: inset 2px 2px 6px black, inset -2px -4px 10px black,  -2px -4px 10px black;
+   font-size: 1rem;
+
+}
+
+#prompt::placeholder {
+  color: black;
+}
+
+#btn{
+  width: 10%;
+  height: 100%;
+  background-color: rgb(20, 181, 213);
+  border: none;
+  border-radius: 0px 30px 30px 0px;
+  cursor: pointer;
+  transition: 0.5s all;
+  border: 2px solid rgb(43,51,57);
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+#btn:hover{
+    background-color: rgb(20, 181, 213,0.644);
+}
+
+img{
+    width: 30px;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 90%;
+
+}
+
+.chat-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chat-text {
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
