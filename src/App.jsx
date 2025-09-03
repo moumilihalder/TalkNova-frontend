@@ -9,7 +9,9 @@ const App = () => {
 
   return (
     <div className="app-container">
-        <SideBar recentChats={recentChats} setCurrentChat={setCurrentChat} />
+        <SideBar 
+        recentChats={recentChats} 
+        setCurrentChat={setCurrentChat} />
         <Body
           recentChats={recentChats}
           setRecentChats={setRecentChats}
