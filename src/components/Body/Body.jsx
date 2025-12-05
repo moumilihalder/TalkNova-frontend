@@ -9,26 +9,30 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
   const [error, setError] = useState(null);
   const chatEndRef = useRef(null);
 
+  // Auto-scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  
-  const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL;
+  // Backend URL from .env
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleSend = async () => {
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) return;
 
-    
+    // Store recent chats
     setRecentChats((prev) => {
-      const updated = [trimmedPrompt, ...prev.filter((chat) => chat !== trimmedPrompt)];
+      const updated = [
+        trimmedPrompt,
+        ...prev.filter((chat) => chat !== trimmedPrompt),
+      ];
       return updated.slice(0, 5);
     });
 
-   
+    // Add user message
     setMessages((prev) => [...prev, { role: "user", text: trimmedPrompt }]);
+
     setLoading(true);
     setError(null);
 
@@ -40,10 +44,15 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP error! status: ${res.status}`);
 
-      
-      setMessages((prev) => [...prev, { role: "ai", text: data.response }]);
+      if (!res.ok) {
+        throw new Error(data.error || "Backend Error");
+      }
+
+      // Backend sends: { answer: "text" }
+      const aiReply = data.answer || "No response received.";
+
+      setMessages((prev) => [...prev, { role: "ai", text: aiReply }]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -70,7 +79,7 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
         </div>
       )}
 
-      
+      {/* Chat Messages */}
       <div className="chat-container">
         {messages.map((msg, i) => (
           <div
@@ -90,7 +99,7 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
         <div ref={chatEndRef} />
       </div>
 
-     
+      {/* Prompt Input */}
       <div className="prompt-area">
         <input
           type="text"
@@ -108,11 +117,11 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
           disabled={loading}
         />
         <button id="btn" onClick={handleSend} disabled={loading}>
-          <img src={assets.send} alt="btn" />
+          <img src={assets.send} alt="send" />
         </button>
       </div>
 
-      
+      {/* Error + Loader */}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
       {loading && <img src={assets.load} alt="loading" />}
     </div>
@@ -120,4 +129,3 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
 };
 
 export default Body;
-
