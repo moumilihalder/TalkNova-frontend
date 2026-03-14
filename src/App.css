@@ -7,7 +7,7 @@
 
 .auth-container{
   height:100vh; /* full screen center */
-  width: 350px;
+  width: 100vw;
   margin: 80px auto;
   padding: 30px;
   background: #2d3748;
