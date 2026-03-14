@@ -10,11 +10,11 @@ const Signup = ({ switchToLogin }) => {
   const generateStrongPassword = (length = 12) => {
     const chars =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
-    let password = "";
+    let pwd = "";
     for (let i = 0; i < length; i++) {
-      password += chars[Math.floor(Math.random() * chars.length)];
+      pwd += chars[Math.floor(Math.random() * chars.length)];
     }
-    return password;
+    return pwd;
   };
 
   const handleSuggestPassword = () => {
@@ -23,13 +23,23 @@ const Signup = ({ switchToLogin }) => {
   };
 
   const handleSignup = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-    const data = await res.json();
-    alert(data.message || "Signup successful");
+    if (!name || !email || !password) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        }
+      );
+      const data = await res.json();
+      alert(data.message || "Signup successful");
+    } catch (err) {
+      console.error(err);
+      alert("Signup failed");
+    }
   };
 
   return (
@@ -54,7 +64,7 @@ const Signup = ({ switchToLogin }) => {
         />
 
         {/* Password input with toggle and suggestion */}
-        <div className="flex items-center mb-4 gap-2 relative">
+        <div className="flex items-center gap-2 mb-1">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
@@ -62,15 +72,13 @@ const Signup = ({ switchToLogin }) => {
             onChange={(e) => setPassword(e.target.value)}
             className="flex-1 p-3 rounded-lg bg-[rgb(50,69,91)] text-white border border-gray-500"
           />
-          {/* Show/Hide button */}
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-20 text-gray-300 hover:text-white px-2"
+            className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-lg"
           >
             {showPassword ? "Hide" : "Show"}
           </button>
-          {/* Suggest strong password */}
           <button
             type="button"
             onClick={handleSuggestPassword}
@@ -79,17 +87,24 @@ const Signup = ({ switchToLogin }) => {
             Suggest
           </button>
         </div>
+        <p className="text-sm text-gray-400 mb-4">
+          Strong password: at least 8 characters, letters, numbers & symbols
+        </p>
 
         <button
           onClick={handleSignup}
-          className="w-full bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-lg font-semibold transition"
+          disabled={!name || !email || !password}
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-lg font-semibold transition disabled:opacity-50"
         >
           Signup
         </button>
 
         <p className="text-center mt-4 text-gray-400">
           Already have an account?{" "}
-          <button className="text-purple-400 hover:underline" onClick={switchToLogin}>
+          <button
+            className="text-purple-400 hover:underline"
+            onClick={switchToLogin}
+          >
             Login
           </button>
         </p>

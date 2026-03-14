@@ -6,13 +6,58 @@
 }
 
 .auth-container{
-  height:100vh;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background-color:rgb(50,69,91);
+  height:100vh; /* full screen center */
+  width: 350px;
+  margin: 80px auto;
+  padding: 30px;
+  background: #2d3748;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  color: white;
+  justify-content: center;
+  align-items: center;
 }
 
+.auth-container h2 {
+  text-align: center;
+}
 
+.auth-container input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
 
+.password-wrapper {
+  display: flex;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.toggle-btn {
+  padding: 0 10px;
+  background: #4fd1c5;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+}
+
+.auth-container button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #4fd1c5;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.password-suggestion {
+  font-size: 12px;
+  color: #a0aec0;
+}
