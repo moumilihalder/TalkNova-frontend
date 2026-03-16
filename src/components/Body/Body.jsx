@@ -30,7 +30,7 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
     setError(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/ask`, {
+      const res = await fetch(`${API_BASE_URL}/api/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
