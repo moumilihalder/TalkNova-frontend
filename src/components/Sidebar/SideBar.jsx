@@ -56,7 +56,7 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled, token,
               trigger="hover"
             ></lord-icon>
             {extended && (
-              <div style={{ color: "white", marginTop: "5px", fontSize: "0.9rem" }}>
+              <div style={{ color: "Black", marginTop: "5px", fontSize: "0.9rem" }}>
                 <p>{user.name}</p>
                 <p style={{ fontSize: "0.8rem", color: "#ccc" }}>{user.email}</p>
               </div>
