@@ -3,88 +3,71 @@ import { assets } from "../../assets/assets";
 import "./Body.css";
 
 const Body = ({ recentChats, setRecentChats, currentChat }) => {
-
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const chatEndRef = useRef(null);
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Auto scroll when message updates
+  // Auto scroll when messages update
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = async () => {
-
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) return;
 
     const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to chat.");
+      return;
+    }
 
-    // Add user message to UI
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text: trimmedPrompt }
-    ]);
-
+    // Show user message in UI
+    setMessages((prev) => [...prev, { role: "user", text: trimmedPrompt }]);
     setLoading(true);
     setError(null);
 
     try {
-
-      const res = await fetch(`${API_BASE_URL}/ask`, {
+      const res = await fetch(`${API_BASE_URL}/api/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ prompt: trimmedPrompt })
+        body: JSON.stringify({ prompt: trimmedPrompt }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Backend Error");
+        throw new Error(data.error?.message || data.error || "Backend Error");
       }
 
-      const aiReply = data.answer || "No response received.";
+      const aiReply = data.answer || "No response from AI.";
 
       // Show AI reply
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", text: aiReply }
-      ]);
+      setMessages((prev) => [...prev, { role: "ai", text: aiReply }]);
 
-      // Update recent chats
+      // Update recent chats (keep latest 5)
       setRecentChats((prev) => {
-        const updated = [
-          { userMessage: trimmedPrompt },
-          ...prev
-        ];
+        const updated = [{ userMessage: trimmedPrompt, aiReply }, ...prev];
         return updated.slice(0, 5);
       });
 
+      setPrompt(""); // clear input after sending
     } catch (err) {
-
       setError(err.message);
-
     } finally {
-
       setLoading(false);
-      setPrompt("");
-
     }
-
   };
 
   return (
-
     <div className="main">
-
       {messages.length === 0 && (
         <div className="main-container">
           <p>
@@ -95,40 +78,27 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
       )}
 
       {/* Chat Messages */}
-
       <div className="chat-container">
-
         {messages.map((msg, i) => (
-
           <div
             key={i}
             className={msg.role === "user" ? "user-chat-box" : "ai-chat-box"}
           >
-
             <div className="chat-message">
-
               <img
                 src={msg.role === "user" ? assets.user : assets.ai}
                 className="chat-pic"
                 alt={msg.role}
               />
-
               <p className="chat-text">{msg.text}</p>
-
             </div>
-
           </div>
-
         ))}
-
         <div ref={chatEndRef} />
-
       </div>
 
       {/* Prompt Area */}
-
       <div className="prompt-area">
-
         <input
           type="text"
           id="prompt"
@@ -143,21 +113,15 @@ const Body = ({ recentChats, setRecentChats, currentChat }) => {
           }}
           disabled={loading}
         />
-
         <button id="btn" onClick={handleSend} disabled={loading}>
           <img src={assets.send} alt="send" />
         </button>
-
       </div>
 
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
       {loading && <img src={assets.load} alt="loading" />}
-
     </div>
-
   );
-
 };
 
 export default Body;
