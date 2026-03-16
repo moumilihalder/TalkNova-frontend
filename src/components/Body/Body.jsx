@@ -9,7 +9,6 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
   const [error, setError] = useState(null);
 
   const chatEndRef = useRef(null);
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Auto scroll
@@ -18,13 +17,18 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
   }, [messages]);
 
   const handleSend = async () => {
-    if (disabled) return; // Block sending if not logged in
+    if (disabled) return;
 
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) return;
 
     const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to send messages.");
+      return;
+    }
 
+    // Add user message
     setMessages((prev) => [...prev, { role: "user", text: trimmedPrompt }]);
     setLoading(true);
     setError(null);
@@ -45,17 +49,23 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
 
       const aiReply = data.answer || "No response received.";
 
+      // Add AI message
       setMessages((prev) => [...prev, { role: "ai", text: aiReply }]);
 
+      // Update recent chats (only latest 5)
       setRecentChats((prev) => {
-        const updated = [{ userMessage: trimmedPrompt }, ...prev];
+        const updated = [
+          { userMessage: trimmedPrompt, aiReply },
+          ...prev,
+        ];
         return updated.slice(0, 5);
       });
+
+      setPrompt(""); // reset input after successful send
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
-      setPrompt("");
     }
   };
 
@@ -94,7 +104,6 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
       <div className="prompt-area">
         <input
           type="text"
-          id="prompt"
           placeholder={disabled ? "Login to start chatting..." : "Ask Something..."}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -106,12 +115,7 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
           }}
           disabled={disabled || loading}
         />
-
-        <button
-          id="btn"
-          onClick={handleSend}
-          disabled={disabled || loading}
-        >
+        <button onClick={handleSend} disabled={disabled || loading}>
           <img src={assets.send} alt="send" />
         </button>
       </div>
@@ -122,8 +126,8 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
         </p>
       )}
 
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {loading && <img src={assets.load} alt="loading" />}
+      {error && <p style={{ color: "red", textAlign: "center" }}>Error: {error}</p>}
+      {loading && <img src={assets.load} alt="loading" style={{ display: "block", margin: "10px auto" }} />}
     </div>
   );
 };
