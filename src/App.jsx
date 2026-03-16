@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SideBar from "./components/SideBar/SideBar.jsx";
+import SideBar from "./components/Sidebar/SideBar.jsx";
 import Body from "./components/Body/Body.jsx";
 import Login from "./Pages/Login.jsx";
 import Signup from "./Pages/Signup.jsx";
@@ -13,7 +13,7 @@ const App = () => {
   const [currentChat, setCurrentChat] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
 
-  // 👇 login না থাকলে login/signup দেখাবে
+  
   if (!token) {
     return (
       <div>
