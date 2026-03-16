@@ -6,21 +6,19 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled }) => {
 
   // Fetch recent chats from backend only if logged in
   useEffect(() => {
-    if (!disabled) {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+    if (!token) return; // skip fetch if not logged in
 
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        if (res.status === 401) throw new Error("Unauthorized");
+        return res.json();
       })
-        .then(res => res.json())
-        .then(data => {
-          setRecentChats(data);
-        })
-        .catch(err => console.log(err));
-    }
-  }, [disabled, setRecentChats]);
+      .then(data => setRecentChats(data))
+      .catch(err => console.log(err));
+  }, []); // or [token] if you want it to re-run when token changes
 
   return (
     <div className='sidebar'>

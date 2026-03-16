@@ -30,13 +30,21 @@ const App = () => {
       <SideBar
         recentChats={recentChats}
         setCurrentChat={setCurrentChat}
-        disabled={!token} // pass disabled prop if you want to gray out sidebar
+        setRecentChats={setRecentChats}
+        disabled={!token} // disable sidebar if not logged in
       />
 
       {/* Main Body */}
       <div style={{ flex: 1, position: "relative" }}>
         {/* Top-right login/logout button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 100 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            zIndex: 100,
+          }}
+        >
           {!token ? (
             <button onClick={() => setModal("login")}>Login</button>
           ) : (
@@ -69,20 +77,27 @@ const App = () => {
             justifyContent: "center",
             alignItems: "center",
             zIndex: 200,
+            backdropFilter: "blur(2px)", // subtle blur behind modal
           }}
         >
           {modal === "login" && (
             <Login
               setToken={(newToken) => {
                 setToken(newToken);
-                setModal(null); // close modal
+                setModal(null); // close modal after login
               }}
               closeLogin={() => setModal(null)}
               switchToSignup={() => setModal("signup")}
             />
           )}
           {modal === "signup" && (
-            <Signup switchToLogin={() => setModal("login")} />
+            <Signup
+              setToken={(newToken) => {
+                setToken(newToken);
+                setModal(null); // close modal after signup
+              }}
+              switchToLogin={() => setModal("login")}
+            />
           )}
         </div>
       )}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Login = ({ switchToSignup }) => {
+const Login = ({ switchToSignup, setToken }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -10,7 +10,6 @@ const Login = ({ switchToSignup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: "POST",
@@ -21,25 +20,23 @@ const Login = ({ switchToSignup }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Login failed!");
+        alert(data.message || "Login failed!");
         return;
       }
 
       localStorage.setItem("token", data.token);
+      setToken(data.token); // update parent state
       alert("Login successful!");
-
-      window.location.reload();
     } catch (err) {
       console.error(err);
       alert("Login failed!");
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[rgb(50,69,91)]">
       <div className="bg-[rgb(30,40,60)] p-8 rounded-xl shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center text-white mb-6">
-          Login
-        </h2>
+        <h2 className="text-2xl font-bold text-center text-white mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"

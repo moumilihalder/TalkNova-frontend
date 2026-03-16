@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 
-const Signup = ({ switchToLogin }) => {
+const Signup = ({ switchToLogin, setToken }) => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Generate strong random password
   const generateStrongPassword = (length = 12) => {
     const chars =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
@@ -23,6 +25,7 @@ const Signup = ({ switchToLogin }) => {
     setFormData({ ...formData, password: strongPassword });
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,13 +44,18 @@ const Signup = ({ switchToLogin }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || "Signup failed!");
+        alert(data.message || "Signup failed!");
         return;
       }
 
-      alert(data.message || "Signup successful!");
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
 
-      switchToLogin();
+      // Update App.jsx token state
+      if (typeof setToken === "function") setToken(data.token);
+
+      alert("Signup successful!");
+      switchToLogin(); // optionally switch to login modal
     } catch (err) {
       console.error(err);
       alert("Signup failed!");
@@ -92,7 +100,6 @@ const Signup = ({ switchToLogin }) => {
               className="flex-1 px-3 py-2 border rounded-lg bg-[rgb(50,69,91)] text-white border-gray-500"
               required
             />
-
             <button
               type="button"
               className="bg-gray-700 px-3 py-1 rounded-lg text-white hover:bg-gray-600"
