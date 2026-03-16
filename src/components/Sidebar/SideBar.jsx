@@ -58,7 +58,7 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled, token,
             {extended && (
               <div style={{ color: "Black", marginTop: "5px", fontSize: "0.9rem" }}>
                 <p>{user.name}</p>
-                <p style={{ fontSize: "0.8rem", color: "#ccc" }}>{user.email}</p>
+                <p style={{ fontSize: "0.8rem", color: "Black" }}>{user.email}</p>
               </div>
             )}
           </div>
