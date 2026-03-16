@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ switchToSignup }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,10 +10,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      alert("Please fill all fields!");
-      return;
-    }
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
@@ -25,6 +19,7 @@ const Login = () => {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         alert(data.error || "Login failed!");
         return;
@@ -32,13 +27,13 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       alert("Login successful!");
-      navigate("/dashboard");
+
+      window.location.reload();
     } catch (err) {
       console.error(err);
       alert("Login failed!");
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[rgb(50,69,91)]">
       <div className="bg-[rgb(30,40,60)] p-8 rounded-xl shadow-lg w-96">
@@ -82,9 +77,12 @@ const Login = () => {
         </form>
         <p className="text-sm text-center mt-4 text-gray-300">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-purple-400 font-semibold hover:underline">
+          <button
+            onClick={switchToSignup}
+            className="text-purple-400 font-semibold hover:underline"
+          >
             Sign Up
-          </Link>
+          </button>
         </p>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import SideBar from "./components/Sidebar/SideBar.jsx";
-import Body from "./components/Body/Body.jsx";
-import Login from "./Pages/Login.jsx";
-import Signup from "./Pages/Signup.jsx";
+import SideBar from "./components/Sidebar/SideBar";
+import Body from "./components/Body/Body";
+import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 import "./App.css";
 
 const App = () => {
