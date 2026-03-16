@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Sidebar.css';
 
-const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled }) => {
+const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled , token }) => {
   const [extended, setExtended] = useState(false);
 
   // Fetch recent chats from backend only if logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) return; // skip fetch if not logged in
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`, {
@@ -18,7 +17,8 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled }) => {
       })
       .then(data => setRecentChats(data))
       .catch(err => console.log(err));
-  }, []); // or [token] if you want it to re-run when token changes
+  }, [token, setRecentChats]);
+
 
   return (
     <div className='sidebar'>

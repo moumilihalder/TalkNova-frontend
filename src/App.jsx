@@ -32,6 +32,7 @@ const App = () => {
         setCurrentChat={setCurrentChat}
         setRecentChats={setRecentChats}
         disabled={!token} // disable sidebar if not logged in
+        token={token}
       />
 
       {/* Main Body */}
