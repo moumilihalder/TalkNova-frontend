@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import './Sidebar.css'
+import React, { useState, useEffect } from 'react';
+import './Sidebar.css';
 
-const SideBar = ({ recentChats, setRecentChats, setCurrentChat }) => {
-
+const SideBar = ({ recentChats, setRecentChats, setCurrentChat, disabled }) => {
   const [extended, setExtended] = useState(false);
 
+  // Fetch recent chats from backend only if logged in
   useEffect(() => {
+    if (!disabled) {
+      const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
-
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setRecentChats(data);
-      });
-
-  }, []);
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          setRecentChats(data);
+        })
+        .catch(err => console.log(err));
+    }
+  }, [disabled, setRecentChats]);
 
   return (
     <div className='sidebar'>
 
+      {/* Top Section */}
       <div className="top">
 
         <lord-icon
@@ -33,11 +35,12 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat }) => {
           onClick={() => setExtended(prev => !prev)}>
         </lord-icon>
 
-        <div className="new-chat" onClick={() => window.location.reload()}>
+        <div className={`new-chat ${disabled ? "disabled" : ""}`} onClick={() => !disabled && window.location.reload()}>
           <p className='plus'>+</p>
           {extended && <p>New Chat</p>}
         </div>
 
+        {/* Recent Chats */}
         {extended && (
           <div className="recent">
 
@@ -47,22 +50,18 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat }) => {
               <p className="empty-recent">No recent chats yet</p>
             ) : (
               recentChats.map((chat) => (
-
                 <div
                   key={chat._id}
-                  className="recent-entry"
-                  onClick={() => setCurrentChat(chat)}
+                  className={`recent-entry ${disabled ? "disabled" : ""}`}
+                  onClick={() => !disabled && setCurrentChat(chat)}
                 >
-
                   <lord-icon
                     src="https://cdn.lordicon.com/motnbmtz.json"
                     trigger="hover">
                   </lord-icon>
 
                   <p>{chat.userMessage.slice(0, 20)}...</p>
-
                 </div>
-
               ))
             )}
 
@@ -71,6 +70,7 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat }) => {
 
       </div>
 
+      {/* Bottom Section */}
       <div className="bottom">
 
         <div className="bottom-item recent-entry">
@@ -100,7 +100,7 @@ const SideBar = ({ recentChats, setRecentChats, setCurrentChat }) => {
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default SideBar
+export default SideBar;

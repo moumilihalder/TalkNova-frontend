@@ -37,6 +37,10 @@
     padding: 12px 20px;
 }*/
 
+.disabled {
+  pointer-events: none; /* block clicks */
+  opacity: 0.5;         /* gray out chat */
+}
 
 /* This makes the chat messages scroll within the available space */
 .chat-container {
