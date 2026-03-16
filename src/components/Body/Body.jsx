@@ -45,9 +45,9 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Backend Error");
+      if (!res.ok) throw new Error(data.error?.message || data.error || "Backend Error");
 
-      const aiReply = data.answer || "No response received.";
+      const aiReply = data.answer || "No response from AI.";
 
       // Add AI message
       setMessages((prev) => [...prev, { role: "ai", text: aiReply }]);
@@ -63,7 +63,7 @@ const Body = ({ recentChats, setRecentChats, currentChat, disabled }) => {
 
       setPrompt(""); // reset input after successful send
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to get AI reply");
     } finally {
       setLoading(false);
     }
