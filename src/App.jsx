@@ -9,6 +9,7 @@ const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [recentChats, setRecentChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // "login", "signup", or null
   const [modal, setModal] = useState(null);
@@ -18,10 +19,33 @@ const App = () => {
     if (!token) setModal("login");
   }, [token]);
 
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!token) {
+        setCurrentUser(null);
+        return;
+      }
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to fetch user");
+        const data = await res.json();
+        setCurrentUser(data); // must return { name, email }
+      } catch (err) {
+        console.log(err);
+        setCurrentUser(null);
+      }
+    };
+    fetchUser();
+  }, [token]);
+
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
-    setModal("login"); // force login modal
+    setCurrentChat(null);
+    setModal("login"); // open login modal after logout
   };
 
   return (
@@ -33,27 +57,12 @@ const App = () => {
         setRecentChats={setRecentChats}
         disabled={!token} // disable sidebar if not logged in
         token={token}
+        logout={logout} // pass logout to sidebar
+        user={currentUser}
       />
 
       {/* Main Body */}
       <div style={{ flex: 1, position: "relative" }}>
-        {/* Top-right login/logout button */}
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            zIndex: 100,
-          }}
-        >
-          {!token ? (
-            <button onClick={() => setModal("login")}>Login</button>
-          ) : (
-            <button onClick={logout}>Logout</button>
-          )}
-        </div>
-
-        {/* Body Component */}
         <Body
           token={token}
           recentChats={recentChats}
@@ -78,7 +87,7 @@ const App = () => {
             justifyContent: "center",
             alignItems: "center",
             zIndex: 200,
-            backdropFilter: "blur(2px)", // subtle blur behind modal
+            backdropFilter: "blur(2px)",
           }}
         >
           {modal === "login" && (
